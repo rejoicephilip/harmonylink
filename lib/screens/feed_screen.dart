@@ -58,17 +58,44 @@ class _FeedScreenState extends State<FeedScreen> {
             itemCount: playlists.length,
             itemBuilder: (context, index) {
               final playlist = playlists[index];
-              return ListTile(
-                title: Text(playlist.title),
-                subtitle: Text(
-                  '${playlist.mood} + ${playlist.songs.length} songs',
+              return Dismissible(
+                key: ValueKey(playlist.id),
+                direction: DismissDirection.endToStart,
+                background: Container(
+                  color: Colors.black,
+                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.only(right: 16),
+                  child: const Icon(
+                    Icons.delete,
+                    color: Colors.white
+                  ),
                 ),
-                onTap: () {
-                  Navigator.pushNamed(
-                    context, '/playlistDetail',
-                    arguments: playlist,
-                   );
+                onDismissed: (direction){
+                  final provider = Provider.of<PlaylistProvider>(
+                    context,
+                    listen: false,
+                  );
+                  provider.deletePlaylist(playlist.id);
+                  
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('playlist successfully deleted!'),
+                    ),
+                  );
                 },
+                child: ListTile(
+                  title: Text(playlist.title),
+                  subtitle: Text(
+                    '${playlist.mood} + ${playlist.songs.length} songs'
+                  ),
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/playlistDetil',
+                      arguments: playlist,
+                    );
+                  },
+                ),
               );
             },
           );

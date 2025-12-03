@@ -20,4 +20,8 @@ class FirestoreService {
     .map((doc) => Playlist.fromDoc(doc))
     .toList();
   }
+
+  Future<void> deletePlaylist(String id) async {
+    await _playlistCollection.doc(id).delete();
+  }
 }

@@ -37,4 +37,14 @@ Future<void> addPlaylist(Playlist playlist) async {
     print('sorry! there was an error loading this playlist. please try again: $e');
   }
 }
+
+Future<void> deletePlaylist(String id) async {
+  try {
+    await _firestoreService.deletePlaylist(id);
+    _playlists.removeWhere((playlist) => playlist.id == id);
+    notifyListeners();
+  } catch (e) {
+    print('sorry! playlist cannot be deleted: $e');
+  }
+}
 }
