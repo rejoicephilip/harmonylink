@@ -7,6 +7,7 @@ import 'screens/create_playlist_screen.dart';
 import 'screens/feed_screen.dart';
 import 'screens/playlist_detail_screen.dart';
 import 'screens/theme_selector_screen.dart';
+import 'screens/add_songs_screen.dart';
 import 'providers/theme_provider.dart';
 import 'providers/playlist_provider.dart';
 import 'firebase_options.dart';
@@ -48,6 +49,8 @@ class HarmonyLinkApp extends StatelessWidget {
               '/feed': (context) => const FeedScreen(),
               '/playlistDetail': (context) => const PlaylistDetailScreen(),
               '/theme': (context) => const ThemeSelectorScreen(),
+              '/add-songs': (context) => const AddSongsScreen(),
+
              },
           );
         },
