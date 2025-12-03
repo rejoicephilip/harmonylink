@@ -56,7 +56,10 @@ class _FeedScreenState extends State<FeedScreen> {
                   '${playlist.mood} + ${playlist.songs.length} songs',
                 ),
                 onTap: () {
-                  // UPDATEEEEE LATER
+                  Navigator.pushNamed(
+                    context, '/playlistDetail',
+                    arguments: playlist,
+                   );
                 },
               );
             },
