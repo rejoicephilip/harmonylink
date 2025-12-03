@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../widgets/mood_button.dart';
+
 class MoodSelectScreen extends StatelessWidget {
   const MoodSelectScreen({super.key});
 
-  void _goToCreate(BuildContext context, String mood) {
-    Navigator.pushNamed(
-      context,
-      '/createPlaylist',
-      arguments: mood,
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,23 +12,26 @@ class MoodSelectScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('select your mood'),
       ),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
+          children: const[
+            Text(
               'choose your mood',
               style: TextStyle(fontSize: 18),
+              textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () => _goToCreate(context, 'calm + collected'),
-              child: const Text ('calm + collected'),
+            SizedBox(height: 24),
+
+            MoodButton(
+              label: 'calm + collected',
+              mood: 'calm + collected',
             ),
-            const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () => _goToCreate(context, 'uplifted'), 
-              child: const Text('uplifted'),
+            SizedBox(height: 16),
+            MoodButton(
+              label: 'uplifted',
+              mood: 'uplifted',
             ),
             // ADD THE REST
           ],
