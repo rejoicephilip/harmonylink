@@ -25,6 +25,14 @@ class _FeedScreenState extends State<FeedScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('harmonylink feed'),
+        actions: [
+          IconButton(
+            onPressed: (){
+              Navigator.pushNamed(context, '/theme');
+            },
+             icon: const Icon(Icons.brightness_6),
+             )
+        ],
       ),
             body: Consumer<PlaylistProvider>(
         builder: (context, playlistProvider, child) {
