@@ -3,6 +3,14 @@ import 'package:flutter/material.dart';
 class MoodSelectScreen extends StatelessWidget {
   const MoodSelectScreen({super.key});
 
+  void _goToCreate(BuildContext context, String mood) {
+    Navigator.pushNamed(
+      context,
+      '/createPlaylist',
+      arguments: mood,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,13 +27,15 @@ class MoodSelectScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
-                // UPDATE LATER
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('mood selected (//////CHANGE ME LATER)')),
-                );
-              },
-              child: const Text('calm + collected'),
+              onPressed: () => _goToCreate(context, 'calm + collected'),
+              child: const Text ('calm + collected'),
             ),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () => _goToCreate(context, 'uplifted'), 
+              child: const Text('uplifted'),
+            ),
+            // ADD THE REST
           ],
         ),
         ),
