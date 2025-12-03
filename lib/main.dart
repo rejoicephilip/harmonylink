@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import 'screens/mood_select_screen.dart';
 import 'providers/theme_provider.dart';
 import 'providers/playlist_provider.dart';
+import 'firebase_options.dart';
+import 'services/auth_service.dart';
 
-void main(){
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  await AuthService().signInAnon();
+
   runApp(const HarmonyLinkApp());
 }
 
@@ -24,7 +34,7 @@ class HarmonyLinkApp extends StatelessWidget {
         builder: (context, themeProvider, child) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            title: 'HarmonyLink',
+            title: 'harmonylink',
             theme: themeProvider.currentTheme,
             initialRoute: '/moodSelect',
             routes: {

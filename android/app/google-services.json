@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "93651264775",
+    "project_id": "dmit2504-fbstart",
+    "storage_bucket": "dmit2504-fbstart.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:93651264775:android:d384bf2d715dabfaeb11a2",
+        "android_client_info": {
+          "package_name": "com.example.firstfirebase"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4RxVP72ARk2DQslulNNq9qI3YS96ut74"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:93651264775:android:7abd45a8082e6f0feb11a2",
+        "android_client_info": {
+          "package_name": "com.example.harmonylink"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4RxVP72ARk2DQslulNNq9qI3YS96ut74"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
