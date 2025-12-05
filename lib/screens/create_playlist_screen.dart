@@ -18,8 +18,11 @@ class _CreatePlaylistScreenState extends State<CreatePlaylistScreen> {
 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _song1Controller = TextEditingController();
+  final TextEditingController _song1Link = TextEditingController();
   final TextEditingController _song2Controller = TextEditingController();
+  final TextEditingController _song2Link = TextEditingController();
   final TextEditingController _song3Controller = TextEditingController();
+  final TextEditingController _song3Link = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
   bool _isSaving = false;
@@ -48,14 +51,27 @@ class _CreatePlaylistScreenState extends State<CreatePlaylistScreen> {
     final String mood =
         (ModalRoute.of(context)?.settings.arguments as String?) ??
             'unknown mood';
+    final List<Map<String, String>> songs = [];
 
-    final List<String> songs = [
-      _song1Controller.text.trim(),
-      if (_song2Controller.text.trim().isNotEmpty)
-        _song2Controller.text.trim(),
-      if (_song3Controller.text.trim().isNotEmpty)
-        _song3Controller.text.trim(),
-    ];
+    if (_song1Controller.text.trim().isNotEmpty || _song1Link.text.trim().isNotEmpty) {
+      songs.add({
+        'title': _song1Controller.text.trim(),
+        'link': _song1Link.text.trim(),
+      });
+    }
+    if (_song2Controller.text.trim().isNotEmpty || _song2Link.text.trim().isNotEmpty) {
+      songs.add({
+        'title': _song2Controller.text.trim(),
+        'link': _song2Link.text.trim(),
+      });
+    }
+    if (_song3Controller.text.trim().isNotEmpty || _song3Link.text.trim().isNotEmpty) {
+      songs.add({
+        'title': _song3Controller.text.trim(),
+        'link': _song3Link.text.trim(),
+      });
+    }
+
 
     final playlist = Playlist(
       id: '',
@@ -120,16 +136,22 @@ class _CreatePlaylistScreenState extends State<CreatePlaylistScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
+                const Text('song link'),
+                TextField(controller: _song1Link),
                 const Text('song 2'),
                 TextField(
                   controller: _song2Controller,
                 ),
                 const SizedBox(height: 16),
+                const Text('song link'),
+                TextField(controller: _song2Link),
                 const Text('song 3'),
                 TextField(
                   controller: _song3Controller,
                 ),
                 const SizedBox(height: 16),
+                const Text('song link'),
+                TextField(controller: _song3Link),
                 const Text('description'),
                 TextField(
                   controller: _descriptionController,

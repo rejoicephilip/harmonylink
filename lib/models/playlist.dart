@@ -4,7 +4,7 @@ class Playlist {
   final String id;
   final String mood;
   final String title;
-  final List<String> songs;
+  final List<Map<String, String>> songs;
   final String? description;
   final DateTime createdAt;
   final String? userId;
@@ -23,7 +23,10 @@ class Playlist {
     return {
       'mood': mood,
       'title': title,
-      'songs': songs,
+      'songs': songs.map((song) => {
+        'title': song['title'] ?? '',
+        'link': song['link'] ?? '',
+      }).toList(),
       'description': description,
       'createdAt': createdAt.toIso8601String(),
       'userId': userId,
@@ -32,9 +35,19 @@ class Playlist {
   factory Playlist.fromDoc(DocumentSnapshot<Map<String,dynamic>> doc) {
     final data = doc.data() ?? {};
 
-    final List<dynamic> songsDynamic = data['songs'] ?? [];
-    final List<String> songsList =
-    songsDynamic.map((item) => item.toString()).toList();
+    final List<Map<String, String>> songsList = [];
+    final songsDynamic = data['songs'];
+
+    if (songsDynamic is List) {
+      for (final item in songsDynamic) {
+        if (item is Map<String, dynamic>) {
+          songsList.add({
+            'title': item['title']?.toString() ?? '',
+            'link': item['link']?.toString() ?? '',
+          });
+        }
+      }
+    };
 
     final createdAtValue = data['createdAt'];
     DateTime createdAtDate;

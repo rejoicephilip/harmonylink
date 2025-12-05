@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 
 import '../models/playlist.dart';
 import '../providers/playlist_provider.dart';
@@ -91,12 +93,26 @@ class PlaylistDetailScreen extends StatelessWidget {
                   child: ListView.builder(
                     itemCount: playlist.songs.length,
                     itemBuilder: (context, index) {
-                      final song = playlist.songs[index];
+                     final songData = playlist.songs[index];
+                    final song = songData is Map ? songData : {}; 
+                    final songTitle = song['title'] ?? 'untitled';
+                    final songLink = song['link'] ?? '';
                       return ListTile(
                         leading: const Icon(Icons.music_note),
-                        title: Text(song),
-                        //// LINK ADDITION 
-                        onTap: (){},
+                        title: Text(songTitle),
+                        subtitle: Text(songLink.isNotEmpty ? 'tap to open' : 'no link provided'),
+                        onTap: () async {
+                          if (songLink.isNotEmpty) {
+                            final Uri url = Uri.parse(songLink);
+                            if (await canLaunchUrl(url)) {
+                              await launchUrl(url, mode: LaunchMode.externalApplication);
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('could not open link')),
+                              );
+                            }
+                          }
+                        },
                       );
                     },
                     ),
