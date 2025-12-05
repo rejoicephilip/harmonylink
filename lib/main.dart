@@ -32,7 +32,13 @@ class HarmonyLinkApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(
+          create: (_) {
+            final provider = ThemeProvider();
+            provider.loadTheme();
+            return provider;
+          },
+          ),
         ChangeNotifierProvider(create: (_) => PlaylistProvider()),
       ],
       child: Consumer<ThemeProvider>(

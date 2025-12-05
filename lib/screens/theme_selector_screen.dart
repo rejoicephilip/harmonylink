@@ -7,7 +7,12 @@ import '../providers/theme_provider.dart';
 class ThemeSelectorScreen extends StatelessWidget{
   const ThemeSelectorScreen({super.key});
 
-  final List<MaterialColor> themeColors = const [
+  
+
+  @override
+  Widget build(BuildContext context) {
+
+    final List<MaterialColor> themeColors = const [
     Colors.blue,
     Colors.pink,
     Colors.green,
@@ -18,11 +23,9 @@ class ThemeSelectorScreen extends StatelessWidget{
     Colors.red,
   ];
 
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('pick you theme!')
+        title: const Text('pick your theme!')
       ),
       body: GridView.count(
         crossAxisCount: 3,
@@ -34,13 +37,25 @@ class ThemeSelectorScreen extends StatelessWidget{
             onTap: () {
               final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
               themeProvider.setTheme(color);
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('theme updated'),
+                  duration: const Duration(milliseconds: 800),
+                ),
+              );
               Navigator.pop(context);
             },
             child: Container(
               decoration: BoxDecoration(
                 color: color,
                 shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.black,
+                  width: 1.5,
+                ),
                    ),
+                   child: const SizedBox.expand(),
             ),
           );
         }).toList(),
