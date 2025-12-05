@@ -29,7 +29,7 @@ class HarmonyLinkApp extends StatelessWidget {
   const HarmonyLinkApp({super.key});
 
   @override
-  Widget build(BuildContext) {
+  Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
@@ -44,14 +44,12 @@ class HarmonyLinkApp extends StatelessWidget {
             initialRoute: '/moodSelect',
             routes: {
               '/moodSelect': (context) => const MoodSelectScreen(),
-              // FINISH AFTER
-             '/createPlaylist': (context) => const CreatePlaylistScreen(),
+              '/createPlaylist': (context) => const CreatePlaylistScreen(),
               '/feed': (context) => const FeedScreen(),
               '/playlistDetail': (context) => const PlaylistDetailScreen(),
               '/theme': (context) => const ThemeSelectorScreen(),
               '/add-songs': (context) => const AddSongsScreen(),
-
-             },
+            },
           );
         },
       ),

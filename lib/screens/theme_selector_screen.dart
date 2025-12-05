@@ -3,32 +3,48 @@ import 'package:provider/provider.dart';
 
 import '../providers/theme_provider.dart';
 
+
 class ThemeSelectorScreen extends StatelessWidget{
   const ThemeSelectorScreen({super.key});
 
+  final List<MaterialColor> themeColors = const [
+    Colors.blue,
+    Colors.pink,
+    Colors.green,
+    Colors.orange,
+    Colors.purple,
+    Colors.yellow,
+    Colors.teal,
+    Colors.red,
+  ];
+
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('theme settings'),
+        title: const Text('pick you theme!')
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text('dark mode'),
-            Switch(
-              value: themeProvider.isDark,
-              onChanged: (value) {
-                themeProvider.toggleTheme(value);
-              },
+      body: GridView.count(
+        crossAxisCount: 3,
+        padding: const EdgeInsets.all(16),
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+        children: themeColors.map((color){
+          return GestureDetector(
+            onTap: () {
+              final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+              themeProvider.setTheme(color);
+              Navigator.pop(context);
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: color,
+                shape: BoxShape.circle,
+                   ),
             ),
-          ],
-        ),
-        ),
+          );
+        }).toList(),
+      ),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../models/playlist.dart';
 import '../providers/playlist_provider.dart';
@@ -67,6 +68,7 @@ class _CreatePlaylistScreenState extends State<CreatePlaylistScreen> {
           ? null
           : _descriptionController.text.trim(),
       createdAt: DateTime.now(),
+      userId: FirebaseAuth.instance.currentUser!.uid,
     );
 
     final playlistProvider =
@@ -147,7 +149,7 @@ class _CreatePlaylistScreenState extends State<CreatePlaylistScreen> {
                               strokeWidth: 2,
                             ),
                           )
-                        : const Text('playlist saved'),
+                        : const Text('create playlist'),
                   ),
                 ),
               ],

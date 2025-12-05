@@ -91,7 +91,7 @@ class _FeedScreenState extends State<FeedScreen> {
                   onTap: () {
                     Navigator.pushNamed(
                       context,
-                      '/playlistDetil',
+                      '/playlistDetail',
                       arguments: playlist,
                     );
                   },

@@ -33,8 +33,9 @@ class _AddSongsScreenState extends State<AddSongsScreen> {
 
             ElevatedButton(
               onPressed: () {
-                if (_songController.text.trim().isEmpty)
+                if (_songController.text.trim().isEmpty){
                 return;
+                }
 
                 setState(() {
                   _songs.add(_songController.text.trim());

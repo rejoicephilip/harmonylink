@@ -7,6 +7,7 @@ class Playlist {
   final List<String> songs;
   final String? description;
   final DateTime createdAt;
+  final String? userId;
 
   Playlist({
     required this.id,
@@ -15,6 +16,7 @@ class Playlist {
     required this.songs,
     this.description,
     required this.createdAt,
+    this.userId
   });
 
   Map<String, dynamic> toMap() {
@@ -24,6 +26,7 @@ class Playlist {
       'songs': songs,
       'description': description,
       'createdAt': createdAt.toIso8601String(),
+      'userId': userId,
     };
   }
   factory Playlist.fromDoc(DocumentSnapshot<Map<String,dynamic>> doc) {
@@ -51,6 +54,7 @@ class Playlist {
       songs: songsList,
       description: data['description']?.toString(),
       createdAt: createdAtDate,
+      userId: data['userId']?.toString(),
     );
   }
 }
