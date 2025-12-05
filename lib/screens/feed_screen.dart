@@ -101,6 +101,13 @@ class _FeedScreenState extends State<FeedScreen> {
           );
         },
       ),
+       floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/moodSelect');
+        },
+        child: const Icon(Icons.add),
+        tooltip: 'create playlist',
+      ),
     );
   }
 }

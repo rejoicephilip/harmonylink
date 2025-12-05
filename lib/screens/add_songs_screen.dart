@@ -36,7 +36,6 @@ class _AddSongsScreenState extends State<AddSongsScreen> {
                 if (_songController.text.trim().isEmpty){
                 return;
                 }
-
                 setState(() {
                   _songs.add(_songController.text.trim());
                 });
