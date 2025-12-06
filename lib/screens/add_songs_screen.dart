@@ -8,9 +8,39 @@ class AddSongsScreen extends StatefulWidget{
 }
 
 class _AddSongsScreenState extends State<AddSongsScreen> {
-  final TextEditingController _songController = TextEditingController();
-  final List<String> _songs = [];
+    final TextEditingController _titleController = TextEditingController();
+    final TextEditingController _linkController = TextEditingController();
+ 
+   final List<Map<String, String>> _songs = [];
+
+    void _addSong() {
+    final title = _titleController.text.trim();
+    final link = _linkController.text.trim();
+
+    if (title.isEmpty || link.isEmpty) return;
+
+    setState(() {
+      _songs.add({'title': title, 'link': link});
+    });
+
+    _titleController.clear();
+    _linkController.clear();
+  }
   
+  void _removeSong(int index) {
+    setState(() {
+      _songs.removeAt(index);
+    });
+  }
+  
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _linkController.dispose();
+    super.dispose();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,25 +52,24 @@ class _AddSongsScreenState extends State<AddSongsScreen> {
         child: Column(
           children: [
             TextField(
-              controller: _songController,
+              controller: _titleController,
               decoration: const InputDecoration(
                 labelText: 'song name',
                 border: OutlineInputBorder(),
               ),
             ),
-
+            const SizedBox(height: 12),
+            TextField(
+              controller: _linkController,
+              decoration: const InputDecoration(
+                labelText: 'song link',
+                border: OutlineInputBorder(),
+              ),
+            ),
             const SizedBox(height: 16),
 
             ElevatedButton(
-              onPressed: () {
-                if (_songController.text.trim().isEmpty){
-                return;
-                }
-                setState(() {
-                  _songs.add(_songController.text.trim());
-                });
-                _songController.clear();
-              }, 
+              onPressed: _addSong,
               child: const Text('add song'),
               ),
               const SizedBox(height: 16),
@@ -49,8 +78,10 @@ class _AddSongsScreenState extends State<AddSongsScreen> {
                 child: ListView.builder(
                   itemCount: _songs.length,
                   itemBuilder: (context, index){
+                    final song = _songs[index];
                     return ListTile(
-                      title: Text(_songs[index]),
+                       title: Text(song['title'] ?? ''),
+                    subtitle: Text(song['link'] ?? ''),
                     );
                   },
                 ),
@@ -60,7 +91,7 @@ class _AddSongsScreenState extends State<AddSongsScreen> {
               onPressed: () {
                 Navigator.pop(context, _songs);
               },
-              child: const Text('song added!'),
+              child: const Text('back'),
             )
           ],
         ),

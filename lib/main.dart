@@ -54,7 +54,7 @@ class HarmonyLinkApp extends StatelessWidget {
               '/feed': (context) => const FeedScreen(),
               '/playlistDetail': (context) => const PlaylistDetailScreen(),
               '/theme': (context) => const ThemeSelectorScreen(),
-              '/add-songs': (context) => const AddSongsScreen(),
+              '/addSongs': (context) => const AddSongsScreen(),
             },
           );
         },

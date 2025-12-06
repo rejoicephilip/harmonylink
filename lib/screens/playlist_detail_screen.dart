@@ -31,6 +31,34 @@ class PlaylistDetailScreen extends StatelessWidget {
         title: Text(playlist.title),
       actions: [
         if (isOwner)
+              IconButton(
+        icon: const Icon(Icons.edit),
+        tooltip: 'Add songs',
+        onPressed: () async {
+          final newSongs = await Navigator.pushNamed(context, '/addSongs');
+          if (newSongs is List<Map<String, String>> && newSongs.isNotEmpty) {
+            final provider = Provider.of<PlaylistProvider>(context, listen: false);
+            final updatedPlaylist = Playlist(
+              id: playlist.id,
+              mood: playlist.mood,
+              title: playlist.title,
+              songs: [...playlist.songs, ...newSongs],
+              description: playlist.description,
+              createdAt: playlist.createdAt,
+              userId: playlist.userId,
+            );
+
+            await provider.updatePlaylist(updatedPlaylist);
+
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('songs added to playlist')),
+              );
+            }
+          }
+        },
+      ),
+
         IconButton(
           icon: const Icon(Icons.delete),
           onPressed: () async {

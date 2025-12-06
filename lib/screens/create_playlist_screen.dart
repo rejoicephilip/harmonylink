@@ -27,6 +27,9 @@ class _CreatePlaylistScreenState extends State<CreatePlaylistScreen> {
 
   bool _isSaving = false;
 
+  List<Map<String, String>> _addedSongs = [];
+  
+
   @override 
   void dispose() {
     _titleController.dispose();
@@ -34,6 +37,9 @@ class _CreatePlaylistScreenState extends State<CreatePlaylistScreen> {
     _song2Controller.dispose();
     _song3Controller.dispose();
     _descriptionController.dispose();
+    _song1Link.dispose();
+    _song2Link.dispose();
+    _song3Link.dispose();
     super.dispose();
   }
    Future<void> _savePlaylist(BuildContext context) async {
@@ -51,26 +57,27 @@ class _CreatePlaylistScreenState extends State<CreatePlaylistScreen> {
     final String mood =
         (ModalRoute.of(context)?.settings.arguments as String?) ??
             'unknown mood';
-    final List<Map<String, String>> songs = [];
+        final List<Map<String, String>> songs = [];
 
-    if (_song1Controller.text.trim().isNotEmpty || _song1Link.text.trim().isNotEmpty) {
-      songs.add({
-        'title': _song1Controller.text.trim(),
-        'link': _song1Link.text.trim(),
-      });
-    }
-    if (_song2Controller.text.trim().isNotEmpty || _song2Link.text.trim().isNotEmpty) {
-      songs.add({
-        'title': _song2Controller.text.trim(),
-        'link': _song2Link.text.trim(),
-      });
-    }
-    if (_song3Controller.text.trim().isNotEmpty || _song3Link.text.trim().isNotEmpty) {
-      songs.add({
-        'title': _song3Controller.text.trim(),
-        'link': _song3Link.text.trim(),
-      });
-    }
+        if (_song1Controller.text.trim().isNotEmpty || _song1Link.text.trim().isNotEmpty) {
+          songs.add({
+            'title': _song1Controller.text.trim(),
+            'link': _song1Link.text.trim(),
+          });
+        }
+        if (_song2Controller.text.trim().isNotEmpty || _song2Link.text.trim().isNotEmpty) {
+          songs.add({
+            'title': _song2Controller.text.trim(),
+            'link': _song2Link.text.trim(),
+          });
+        }
+        if (_song3Controller.text.trim().isNotEmpty || _song3Link.text.trim().isNotEmpty) {
+          songs.add({
+            'title': _song3Controller.text.trim(),
+            'link': _song3Link.text.trim(),
+          });
+        }
+        songs.addAll(_addedSongs);
 
 
     final playlist = Playlist(
@@ -132,12 +139,17 @@ class _CreatePlaylistScreenState extends State<CreatePlaylistScreen> {
                 TextField(
                   controller: _song1Controller,
                   decoration: const InputDecoration(
-                    hintText: 'paste your song link',
+                    hintText: 'song name',
                   ),
                 ),
                 const SizedBox(height: 16),
                 const Text('song link'),
-                TextField(controller: _song1Link),
+                TextField(
+                  controller: _song1Link,
+                  decoration: const InputDecoration(
+                    hintText: 'paste song link',
+                  ),
+                  ),
                 const Text('song 2'),
                 TextField(
                   controller: _song2Controller,
@@ -158,6 +170,26 @@ class _CreatePlaylistScreenState extends State<CreatePlaylistScreen> {
                   maxLines: 3,
                 ),
                 const SizedBox(height: 24),
+                ElevatedButton.icon(
+                  onPressed: () async {
+                    final newSongs = await Navigator.pushNamed(context, '/addSongs');
+                    if (newSongs is List<Map<String, String>>) {
+                      setState(() {
+                        _addedSongs.addAll(newSongs);
+                      });
+                    }
+                  },
+                  icon: const Icon(Icons.add),
+                  label: const Text('add more songs'),
+                ),
+                if (_addedSongs.isNotEmpty) ...[
+                  const SizedBox(height: 16),
+                  const Text('added songs:'),
+                  ..._addedSongs.map((song) => ListTile(
+                    title: Text(song['title'] ?? ''),
+                    subtitle: Text(song['link'] ?? ''),
+                  ))
+                ],
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
