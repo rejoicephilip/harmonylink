@@ -10,7 +10,6 @@ class CreatePlaylistScreen extends StatefulWidget {
 
   @override
   State<CreatePlaylistScreen> createState() => _CreatePlaylistScreenState();
-
 }
 
 class _CreatePlaylistScreenState extends State<CreatePlaylistScreen> {
@@ -26,11 +25,9 @@ class _CreatePlaylistScreenState extends State<CreatePlaylistScreen> {
   final TextEditingController _descriptionController = TextEditingController();
 
   bool _isSaving = false;
-
   List<Map<String, String>> _addedSongs = [];
-  
 
-  @override 
+  @override
   void dispose() {
     _titleController.dispose();
     _song1Controller.dispose();
@@ -42,10 +39,32 @@ class _CreatePlaylistScreenState extends State<CreatePlaylistScreen> {
     _song3Link.dispose();
     super.dispose();
   }
-   Future<void> _savePlaylist(BuildContext context) async {
-    if (_song1Controller.text.trim().isEmpty) {
+
+  Future<void> _savePlaylist(BuildContext context) async {
+    if (!_formKey.currentState!.validate()) return;
+
+    final String mood =
+        (ModalRoute.of(context)?.settings.arguments as String?) ?? 'unknown mood';
+
+    final List<Map<String, String>> songs = [];
+
+    void addIfValid(String title, String link) {
+      if (title.trim().isNotEmpty && link.trim().isNotEmpty) {
+        final uri = Uri.tryParse(link.trim());
+        if (uri != null && uri.isAbsolute) {
+          songs.add({'title': title.trim(), 'link': link.trim()});
+        }
+      }
+    }
+
+    addIfValid(_song1Controller.text, _song1Link.text);
+    addIfValid(_song2Controller.text, _song2Link.text);
+    addIfValid(_song3Controller.text, _song3Link.text);
+    _addedSongs.forEach((song) => addIfValid(song['title'] ?? '', song['link'] ?? ''));
+
+    if (songs.length < 3) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('please enter at least three song links.')),
+        const SnackBar(content: Text('please provide at least 3 valid songs.')),
       );
       return;
     }
@@ -54,38 +73,10 @@ class _CreatePlaylistScreenState extends State<CreatePlaylistScreen> {
       _isSaving = true;
     });
 
-    final String mood =
-        (ModalRoute.of(context)?.settings.arguments as String?) ??
-            'unknown mood';
-        final List<Map<String, String>> songs = [];
-
-        if (_song1Controller.text.trim().isNotEmpty || _song1Link.text.trim().isNotEmpty) {
-          songs.add({
-            'title': _song1Controller.text.trim(),
-            'link': _song1Link.text.trim(),
-          });
-        }
-        if (_song2Controller.text.trim().isNotEmpty || _song2Link.text.trim().isNotEmpty) {
-          songs.add({
-            'title': _song2Controller.text.trim(),
-            'link': _song2Link.text.trim(),
-          });
-        }
-        if (_song3Controller.text.trim().isNotEmpty || _song3Link.text.trim().isNotEmpty) {
-          songs.add({
-            'title': _song3Controller.text.trim(),
-            'link': _song3Link.text.trim(),
-          });
-        }
-        songs.addAll(_addedSongs);
-
-
     final playlist = Playlist(
       id: '',
       mood: mood,
-      title: _titleController.text.trim().isEmpty
-          ? 'untitled'
-          : _titleController.text.trim(),
+      title: _titleController.text.trim(),
       songs: songs,
       description: _descriptionController.text.trim().isEmpty
           ? null
@@ -94,15 +85,12 @@ class _CreatePlaylistScreenState extends State<CreatePlaylistScreen> {
       userId: FirebaseAuth.instance.currentUser!.uid,
     );
 
-    final playlistProvider =
-        Provider.of<PlaylistProvider>(context, listen: false);
-
+    final playlistProvider = Provider.of<PlaylistProvider>(context, listen: false);
     await playlistProvider.addPlaylist(playlist);
 
     setState(() {
       _isSaving = false;
     });
-
 
     if (mounted) {
       Navigator.pushReplacementNamed(context, '/feed');
@@ -111,61 +99,105 @@ class _CreatePlaylistScreenState extends State<CreatePlaylistScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final labelStyle = theme.textTheme.bodyMedium?.copyWith(
+      color: theme.colorScheme.onSurface,
+    );
+
     final String mood =
-        (ModalRoute.of(context)?.settings.arguments as String?) ??
-            'unknown mood';
+        (ModalRoute.of(context)?.settings.arguments as String?) ?? 'unknown mood';
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('$mood new playlist'),
+        title: Text('mood selected: $mood'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
-          key: _formKey, 
+          key: _formKey,
           child: SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Text('playlist title'),
-                TextField(
+                Text('playlist title', style: labelStyle),
+                const SizedBox(height: 8),
+                TextFormField(
                   controller: _titleController,
-                  decoration: const InputDecoration(
-                    hintText: 'e.g. late night thoughts',
-                  ),
+                  textAlign: TextAlign.center,
+                  decoration: const InputDecoration(hintText: 'e.g. late night thoughts'),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'please enter a title';
+                    }
+                    return null;
+                  },
                 ),
-                const SizedBox(height: 16),
-                const Text('song 1 (required)'),
-                TextField(
+                const SizedBox(height: 32),
+                Text('song 1 (required)', style: labelStyle),
+                TextFormField(
                   controller: _song1Controller,
-                  decoration: const InputDecoration(
-                    hintText: 'song name',
-                  ),
+                  decoration: const InputDecoration(hintText: 'song name'),
+                  validator: (value) =>
+                      value == null || value.trim().isEmpty ? 'required' : null,
                 ),
                 const SizedBox(height: 16),
-                const Text('song link'),
-                TextField(
+                Text('song link', style: labelStyle),
+                TextFormField(
                   controller: _song1Link,
-                  decoration: const InputDecoration(
-                    hintText: 'paste song link',
-                  ),
-                  ),
-                const Text('song 2'),
-                TextField(
+                  decoration: const InputDecoration(hintText: 'paste song link'),
+                  validator: (value) {
+                    final uri = Uri.tryParse(value ?? '');
+                    if (value == null || value.trim().isEmpty || uri == null || !uri.isAbsolute) {
+                      return 'enter a valid URL';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                Text('song 2', style: labelStyle),
+                TextFormField(
                   controller: _song2Controller,
+                  decoration: const InputDecoration(hintText: 'song name'),
+                  validator: (value) =>
+                      value == null || value.trim().isEmpty ? 'required' : null,
                 ),
                 const SizedBox(height: 16),
-                const Text('song link'),
-                TextField(controller: _song2Link),
-                const Text('song 3'),
-                TextField(
+                Text('song link', style: labelStyle),
+                TextFormField(
+                  controller: _song2Link,
+                  decoration: const InputDecoration(hintText: 'paste song link'),
+                  validator: (value) {
+                    final uri = Uri.tryParse(value ?? '');
+                    if (value == null || value.trim().isEmpty || uri == null || !uri.isAbsolute) {
+                      return 'enter a valid URL';
+                    }
+                    return null;
+                },
+                ),
+                const SizedBox(height: 16),
+                Text('song 3', style: labelStyle),
+                TextFormField(
                   controller: _song3Controller,
+                  decoration: const InputDecoration(hintText: 'song name'),
+                  validator: (value) =>
+                      value == null || value.trim().isEmpty ? 'required' : null,
                 ),
                 const SizedBox(height: 16),
-                const Text('song link'),
-                TextField(controller: _song3Link),
-                const Text('description'),
-                TextField(
+                Text('song link', style: labelStyle),
+                TextFormField(
+                  controller: _song3Link,
+                  decoration: const InputDecoration(hintText: 'paste song link'),
+                  validator: (value) {
+                    final uri = Uri.tryParse(value ?? '');
+                    if (value == null || value.trim().isEmpty || uri == null || !uri.isAbsolute) {
+                      return 'enter a valid URL';
+                    }
+                    return null;
+                },
+                ),
+                const SizedBox(height: 16),
+                Text('description', style: labelStyle),
+                TextFormField(
                   controller: _descriptionController,
                   maxLines: 3,
                 ),
@@ -176,41 +208,43 @@ class _CreatePlaylistScreenState extends State<CreatePlaylistScreen> {
                     if (newSongs is List<Map<String, String>>) {
                       setState(() {
                         _addedSongs.addAll(newSongs);
-                      });
+                    });
                     }
                   },
                   icon: const Icon(Icons.add),
                   label: const Text('add more songs'),
                 ),
                 if (_addedSongs.isNotEmpty) ...[
-                  const SizedBox(height: 16),
-                  const Text('added songs:'),
-                  ..._addedSongs.map((song) => ListTile(
-                    title: Text(song['title'] ?? ''),
-                    subtitle: Text(song['link'] ?? ''),
-                  ))
+                  const SizedBox(height: 32),
+                  Text('added songs:', style: theme.textTheme.bodyLarge),
+                  const SizedBox(height: 12),
+                  ..._addedSongs.map((song) => Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4.0),
+                        child: ListTile(
+                          title: Text(song['title'] ?? ''),
+                          subtitle: Text(song['link'] ?? ''),
+                      ),
+                      )),
                 ],
+                const SizedBox(height: 36),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed:
-                        _isSaving ? null : () => _savePlaylist(context),
+                    onPressed: _isSaving ? null : () => _savePlaylist(context),
                     child: _isSaving
                         ? const SizedBox(
                             height: 20,
                             width: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                            ),
+                            child: CircularProgressIndicator(strokeWidth: 2),
                           )
                         : const Text('create playlist'),
                   ),
-                ),
+               ),
               ],
             ),
-          ),
         ),
-      ),
+        ),
+    ),
     );
   }
 }

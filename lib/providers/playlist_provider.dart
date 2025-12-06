@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/playlist.dart';
 import '../services/firestore_service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 class PlaylistProvider extends ChangeNotifier {
@@ -15,6 +15,21 @@ final List<Playlist> _playlists = [];
 
 bool get isLoading => _isLoading;
 List<Playlist> get playlists => List.unmodifiable(_playlists);
+
+String _selectedMood = 'All';
+
+String get selectedMood => _selectedMood;
+
+void setMoodFilter(String mood) {
+  _selectedMood = mood;
+  notifyListeners();
+}
+
+List<Playlist> get filteredPlaylists {
+  if (_selectedMood == 'All') return _playlists;
+  return _playlists.where((p) => p.mood == _selectedMood).toList();
+}
+
 
 Future<void> loadPlaylists() async {
   _isLoading = true;

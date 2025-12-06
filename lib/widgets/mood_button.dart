@@ -1,68 +1,61 @@
 import 'package:flutter/material.dart';
 
-class MoodButton extends StatefulWidget{
+class MoodButton extends StatelessWidget {
   final String label;
   final String mood;
+  final IconData icon;
 
   const MoodButton({
     super.key,
     required this.label,
     required this.mood,
+    required this.icon,
   });
 
   @override
-  State<MoodButton> createState() => _MoodButtonState();
-}
-
-class _MoodButtonState extends State<MoodButton> {
-  double _scale = 1.0;
-
-  void _setScale(bool down) {
-    void _setScale (bool down) {
-      if (down == true) {
-      _scale = 0.95;
-    } else {
-      _scale = 1.0;
-    }
-    
-    setState(() {});
-      }
-  }
-
-  void _goToCreate(){
-    Navigator.pushNamed(
-      context,
-      '/createPlaylist',
-      arguments: widget.mood,
-    );
-  }
-
-  @override 
   Widget build(BuildContext context) {
-    return AnimatedScale(
-      scale: _scale,
-      duration: const Duration(
-        milliseconds: 120
-      ),
-      child: InkWell(
-      onTap: _goToCreate,
-      onTapDown: (_) => _setScale(true),
-      onTapUp: (_) => _setScale(false),
-      onTapCancel: () => _setScale(false),
-      borderRadius: BorderRadius.circular(12),
+    final theme = Theme.of(context);
+
+    return InkWell(
+      onTap: () {
+        Navigator.pushNamed(
+          context,
+          '/createPlaylist',
+          arguments: mood,
+        );
+      },
+      borderRadius: BorderRadius.circular(16),
+      splashColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
       child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: Theme.of(context).colorScheme.primaryContainer,
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Theme.of(context).shadowColor.withOpacity(0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            ),
+          ],
+          border: Border.all(
+            color: Theme.of(context).dividerColor.withOpacity(0.2),
+          ),
         ),
-        child: Text(
-          widget.label,
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 16),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 22, color: Theme.of(context).colorScheme.primary),
+            const SizedBox(width: 10),
+            Text(
+              label,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+                color: theme.colorScheme.onSurface, // ✅ Ensures readability
+              ),
+            ),
+          ],
         ),
-      ),
       ),
     );
   }

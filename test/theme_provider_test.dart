@@ -1,27 +1,14 @@
-// import 'package:flutter_test/flutter_test.dart';
-// import 'package:harmonylink/providers/theme_provider.dart';
+import 'package:flutter/material.dart';
 
+class ThemeProvider with ChangeNotifier {
+  bool _isDark = false;
 
-// void main() {
-//   group('themeprovider', () {
-//     test('starts in light mode', (){
-//       final themeProvider = ThemeProvider();
-//       expect(themeProvider.isDark, isFalse);
-//     });
+  bool get isDark => _isDark;
 
-//     test('toggleTheme switches to dark mode', (){
-//       final themeProvider = ThemeProvider();
+  ThemeMode get currentTheme => _isDark ? ThemeMode.dark : ThemeMode.light;
 
-//       themeProvider.toggleTheme(true);
-//       expect(themeProvider.isDark, isTrue);
-//     });
-
-//     test('toggleTheme switches back to light mode', () {
-//       final themeProvider = ThemeProvider();
-
-//       themeProvider.toggleTheme(true);
-//       themeProvider.toggleTheme(false);
-//       expect(themeProvider.isDark, isFalse);
-//     });
-//   });
-// }
+  void toggleTheme(bool isDarkMode) {
+    _isDark = isDarkMode;
+    notifyListeners();
+  }
+}

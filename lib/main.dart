@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 
 import 'screens/mood_select_screen.dart';
 import 'screens/create_playlist_screen.dart';
@@ -46,7 +48,14 @@ class HarmonyLinkApp extends StatelessWidget {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             title: 'harmonylink',
-            theme: themeProvider.currentTheme,
+                      theme: themeProvider.currentTheme.copyWith(
+                      textTheme: GoogleFonts.latoTextTheme().copyWith(
+                      headlineSmall: GoogleFonts.pacifico(
+                      fontSize: 26,
+                      fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
             initialRoute: '/moodSelect',
             routes: {
               '/moodSelect': (context) => const MoodSelectScreen(),
